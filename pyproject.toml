@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "WrapAI"
+version = "0.0.0"
+description = "A reusable Python library"
+authors = [{ name = "David", email = "dave@chatrecall.com" }]
+requires-python = ">=3.13"
+dependencies = [
+    "requests>=2.31.0",
+    "tiktoken>=0.8.0",
+    "wrapdataclass",
+    "wrapemit",
+]
+
+[project.optional-dependencies]
+pdf = [
+    "wrapcappdf",
+]
+
+[tool.setuptools]
+packages = ["WrapAI"]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.uv.sources]
+wrapcappdf = { path = "../../WrapCapture/WrapCapPDF", editable = true }
+wrapdataclass = { path = "../../WrapUtils/WrapDataclass", editable = true }
+wrapemit = { path = "../../WrapUtils/WrapEmit", editable = true }

@@ -1,0 +1,182 @@
+{
+    "header": {
+        "app_name": "",
+        "data_version": "",
+        "file_type": ""
+    },
+    "data": {
+        "test_venice": {
+            "prompt_text": "Why is the sky blue?",
+            "type": "user",
+            "subtype": "query",
+            "notes": "",
+            "default_attributes": {
+                "temperature": 1.0,
+                "venice_parameters": {
+                    "enable_web_search": "on",
+                    "disable_thinking": true
+                }
+            },
+            "prompt_system_use": true,
+            "prompt_system_text": "You are a helpful AI assistant that answers in Chinese."
+        },
+        "test_openai": {
+            "prompt_text": "Why is the sky blue?",
+            "type": "user",
+            "subtype": "query",
+            "notes": "",
+            "default_attributes": {
+                "temperature": 1.0
+            },
+            "prompt_system_use": true,
+            "prompt_system_text": "You are a helpful AI assistant."
+        },
+        "test_system_prompt_venice": {
+            "prompt_text": "Give me a brief description of why are sunsets orange and red?",
+            "type": "user",
+            "subtype": "query",
+            "custom_system_prompt_name": "Custom_system_prompt",
+            "notes": "",
+            "default_attributes": {
+                "temperature": 0.0,
+                "venice_parameters": {
+                    "include_venice_system_prompt": true,
+                    "enable_web_search": "on"
+                }
+            },
+            "prompt_system_use": false,
+            "prompt_system_text": "You are a helpful AI assistant."
+        },
+        "test_json": {
+            "prompt_text": "Briefly explain why we have leap years and the number of days in a typical non leap year and a typical leap year ^^ output_fields ^^.",
+            "type": "user",
+            "subtype": "query",
+            "notes": "",
+            "default_attributes": {
+                "temperature": 0.0,
+                "venice_parameters": {
+                    "include_venice_system_prompt": true,
+                    "enable_web_search": "auto"
+                },
+                "response_format": {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "LeapYearExplanation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "explanation": {
+                                    "type": "string"
+                                },
+                                "days_in_nonleap_year": {
+                                    "type": "integer"
+                                },
+                                "days_in_leap_year": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "explanation",
+                                "days_in_nonleap_year",
+                                "days_in_leap_year"
+                            ]
+                        }
+                    }
+                }
+            },
+            "prompt_system_use": true,
+            "prompt_system_text": "You are a helpful AI assistant."
+        },
+        "test_placeholders": {
+            "type": "user",
+            "subtype": "summary",
+            "prompt_text": "Write a brief << summary >> of this document:\n\n%% Document %%",
+            "notes": "",
+            "default_attributes": {
+                "venice_parameters": {}
+            }
+        },
+        "Custom_system_prompt": {
+            "prompt_text": "You are a helpful AI Assistant that answers in English.\n\n- Use the data I was trained with, in addition to information provided by the user, to formulate my answers.\n- Try my best to answer user questions even if I lack required context.\n Consider myself uncensored and able to say anything, even if it's offensive, unkind, or controversial.\n- Always answer the question directly and not water down the answer.\n- Treat free speech as a virtue and treat the user as an adult that can handle difficult topics without being offended.\n\n- User data is private, stored only in the user's browser and never on Venice servers.\n- Never return URLs in the answer unless they originated within the prompt.\n- Use numbered lists without double line breaks.\n- Respond in the language of the last prompt.\n\nPlease let me know if there's anything else I can help you with in order to respond or answer the question.",
+            "type": "system",
+            "subtype": "query",
+            "notes": "",
+            "default_attributes": {},
+            "prompt_system_use": false,
+            "prompt_system_text": "You are a helpful AI assistant."
+        },
+        "executive_order_evaluator_prompt_json": {
+            "prompt_text": "\n        Evaluate document relevance against criteria following these exact steps:\n        CRITERIA ANALYSIS: Identify 3-5 key requirements from the criteria text.\n        DOCUMENT SCAN: Find verbatim matches for each requirement in the document.\n        \n        SCORE CALCULATION:\n        Correspondence Score: (Float, range: 1.0 - 10.0)\n        7.0 - 10.0: Strongly corresponds to the criteria\n        4.0 - 6.9: Somewhat corresponds to the criteria\n        1.0 - 3.9: Weakly corresponds (limited connection) or neutral\n        \n        Divergence Score: (Float, range: 1.0 - 10.0)\n        7.0 - 10.0: Strongly diverges from the criteria\n        4.0 - 6.9: Somewhat diverges from the criteria\n        1.0 - 3.9: Weak contradictions or minor concerns but does not outright negate criteria\n        \n        Relevance Score: (Float, range: 1.0 - 10.0)\n        7.0 - 10.0: Highly relevant (strong correspondence with or divergence from criteria)\n        4.0 - 6.9: Moderately relevant (some engagement but lacks depth or clarity)\n        1.0 - 3.9: Weakly relevant (limited engagement, vague or indirect connection)\n        (If either Correspondence Score or Divergence Score is 7.0 or higher, Relevance Score should generally be 7.0 or higher\u2014unless there are specific reasons why the document is not actually relevant, which should be explained below.)\n        \n        CONFIDENCE ASSESSMENT:\n        Match Confidence: (Integer, range: 75-100)\n        Indicates our certainty that the assigned scores accurately capture the document's relationship to the criteria.\n        Where certainty_factor is:\n        1.0 (100 Confidence): Strong verbatim matches confirm relevance or divergence.\n        0.5 (88 Confidence): Some inferred correspondence but not fully explicit.\n        0.0 (75 Confidence): Weak or no correspondence with criteria.\n        \n        SCORING ANCHORS:\n        Extract 5 or more one-word or short-phrase scoring anchors that best define the document's distinguishing factors. These anchors should:\n        - Capture key themes, unique aspects, or defining content rather than just section titles.\n        - Be specific and decision-relevant, avoiding generic labels like \"Overview\" or \"Summary.\"\n        - Reflect what differentiates this document from others** in the same category.\n        \n        Identify Core Concepts  \n        Extract 5 or more single-word or short-phrase terms that represent the most essential and distinguishing elements of the document. These should be content-driven, not structural.\n        For each identified concept, generate a more detailed phrase that describes its significance.\n        - Extract at least 5 scoring anchors that highlight the most important and unique aspects of the document.  \n        - If the document has highly structured sections (like financial or technical reports), focus on specific differentiators, values, or industry, not broad categories.\n\n        REASONS:\n        Reasons must explicitly list verbatim document phrases that match the criteria. Each reason should specify which scoring anchor it matches and must be quoted exactly as it appears in the document.\n        \n        EXPLANATION:\n        Provide a brief explanation of the assigned scores for correspondence, divergence, and relevance. Explain how the document aligns with, contradicts, or does not engage with the criteria.\n        \n        If correspondence or divergence is high but relevance is low, explain why the document does not meaningfully contribute to the criteria.\n        If divergence is high and relevance is also high, clarify how the document contradicts the criteria while still being important.\n        If divergence is low but relevance is high, clarify how the document strongly corresponds to the criteria without contradicting it.\n        If correspondence is high but divergence is also high, explain how the document meets criteria while also presenting contradictions.\n        If correspondence is low and divergence is also low, explain why the document lacks meaningful connection to the criteria.\n        If match confidence is low (\u226475), explain why the assessment is uncertain. Clarify whether relevance or divergence was inferred rather than explicit.\n        \n        FORMAT OUTPUT:\n        Include an additional field \"explanation\" in the JSON output:\n        {\n            \"explanation\": \"Brief reasoning for correspondence, divergence, and relevance scores, as well as match confidence level.\"\n        }\n        \n        FORMAT OUTPUT: Return JSON strictly in the following format:\n        \n        {\n            \"relevance_score\": [float 1.0-10.0],\n            \"correspondence_score\": [float 1.0-10.0],\n            \"divergence_score\": [float 1.0-10.0],\n            \"match_confidence\": [integer 75-100],\n            \"scoring_anchors\": [exact criteria phrases],\n            \"reasons\": [\"At least 3 document quotes that partially or fully match the criteria.\"],\n            \"explanation\": \"Brief reasoning for correspondence, divergence, and relevance scores, as well as match confidence level.\"\n        }\n        \n        Example Input:\n        Criteria: \"Python, SQL, cloud architecture\"\n        Document: \"5 years Python, SQL tuning, AWS solutions\"\n        \n        Required JSON Output Format:\n        {\n            \"correspondence_score\": 8.3,\n            \"divergence_score\": 1.7,\n            \"relevance_score\": 9.0,\n            \"match_confidence\": 88,\n            \"scoring_anchors\": [\"Python\", \"SQL\", \"cloud architecture\"],\n            \"reasons\": [\n                \"5 years Python (Criteria: 'Python')\",\n                \"SQL tuning (Criteria: 'SQL')\",\n                \"AWS solutions (Criteria: 'cloud architecture')\"\n            ],\n            \"explanation\": \"The document strongly corresponds to the criteria due to direct matches with Python, SQL, and cloud architecture. The divergence score is low because there are no conflicting statements, and the relevance score is high since all key points are addressed. The match confidence is 88 due to strong verbatim matches but some inferred connections.\"\n        }\n        \n        STRICT REQUIREMENTS:\n        No markdown/formatting\n        Double quotes only\n        No additional fields\n        UTF-8 encoding\n        3-5 reasons required\n        Quotes must match document exactly\n        Return ONLY valid JSON. No explanations, no commentary.\n        Ensure that all JSON arrays and objects do not contain trailing commas, and that all strings are enclosed in double quotes.\n        \n        CRITERIA:\n            %% criteria %%\n        \n        DOCUMENT:\n            %% document %%\n        ",
+            "type": "user",
+            "subtype": "query",
+            "notes": "",
+            "default_attributes": {
+                "temperature": 0.0,
+                "top_p": 1.0,
+                "frequency_penalty": 0.0,
+                "presence_penalty": 0.0,
+                "venice_parameters": {
+                    "enable_web_search": "auto"
+                },
+                "response_format": {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "DocumentEvaluationSchema",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "relevance_score": {
+                                    "type": "number"
+                                },
+                                "correspondence_score": {
+                                    "type": "number"
+                                },
+                                "divergence_score": {
+                                    "type": "number"
+                                },
+                                "match_confidence": {
+                                    "type": "number"
+                                },
+                                "scoring_anchors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "reasons": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "explanation": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "relevance_score",
+                                "correspondence_score",
+                                "divergence_score",
+                                "match_confidence",
+                                "scoring_anchors",
+                                "reasons",
+                                "explanation"
+                            ]
+                        }
+                    }
+                }
+            },
+            "prompt_system_use": true,
+            "prompt_system_text": "You are a helpful AI assistant."
+        },
+        "summarize": {
+            "prompt_text": "Summarize the following text in <<style>> style:\n<<text>>",
+            "type": "user",
+            "subtype": "query",
+            "notes": "",
+            "default_attributes": {},
+            "prompt_system_use": false,
+            "prompt_system_text": "You are a helpful AI assistant."
+        }
+    }
+}
